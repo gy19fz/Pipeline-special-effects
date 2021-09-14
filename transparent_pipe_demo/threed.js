@@ -1,6 +1,6 @@
 /**
- * @author ChrisGvo 
- * http://www.okbase.net/home/threejs  收录整理
+ * @author FG
+ * 
  */
 const textureLoader = (window.textureLoader = new THREE.TextureLoader());
 const blackBasicMaterial = (window.blackBasicMaterial = new THREE.MeshBasicMaterial({color: "black"}));
