@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Threejs透明管道效果</title>
+  </head>
+<body>
+<div id="canvas-frame"></div>
+<script src="three.min.js"></script>
+<!-- 控制器 -->
+<script src="OrbitControls.js"></script>
+
+<script src="threed.js"></script>
+<script>
+// 初始化
+const { scene, bloomScene, camera, renderer } = initThree("#canvas-frame");
+const lights = initLight();
+const controls = initControls();
+var tubeAnimate;
+
+// 管道曲线上的点
+const pointsArr = [[-80, -20, -10], [-70, 20, -10], [0, 0, -10],
+            [70, 30, -10], [20, 40, -10]];
+
+// 透明的管道配置
+const transparentconf = {points:pointsArr, color:0x4488ff, radius:2, opacity:0.3};
+
+// 管道内流动的液体
+const conf = {points:pointsArr, texture:'data:image/png;base64,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', radius:0.3};
+
+(async function () {
+    // 创建管道
+    const { texture: tubeTexture0, mesh: tube0 } = await createTube(transparentconf);
+    const { texture: tubeTexture1, mesh: tube1 } = await createTube(conf);
+    
+    // 通过位移实现流动
+    tubeAnimate = function () {
+            tubeTexture1.offset.x -= 0.05;
+          };
+    scene.add(tube0);
+    scene.add(tube1);
+    animate();
+})();
+
+function animate() {
+    tubeAnimate();
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+}
+</script>
+
+</body>
+</html>
